@@ -10,7 +10,3 @@ Route::get('/about', function () {
     return view('about');
 });
 
-Route::get('/test', function () {
-    return 'Test is OK';
-});
-
