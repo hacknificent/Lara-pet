@@ -12,16 +12,6 @@ use Illuminate\Routing\Redirector;
 class ProjectIdeasController extends Controller
 {
 
-    public function statuses(): array
-    {
-        return [
-            0 => 'Draft',
-            1 => 'Confirmed',
-            2 => 'In Progress',
-            3 => 'Completed',
-        ];
-    }
-
     /**
      * Display a listing of the resource.
      */
@@ -29,9 +19,10 @@ class ProjectIdeasController extends Controller
     {
         return view('project-ideas/index', [
             'ideas' => ProjectIdea::latest()->get(),
-            'statuses' => $this->statuses(),
+            'statuses' => ProjectIdea::STATUSES,
         ]);
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -40,7 +31,6 @@ class ProjectIdeasController extends Controller
         return view('project-ideas/create');
     }
 
-
     /**
      * Display the specified resource.
      */
@@ -48,7 +38,7 @@ class ProjectIdeasController extends Controller
     {
         return view('project-ideas/show', [
             'projectIdea' => $projectIdea,
-            'projectStatuses' => $this->statuses(),
+            'projectStatuses' => ProjectIdea::STATUSES,
         ]);
     }
 
@@ -59,7 +49,7 @@ class ProjectIdeasController extends Controller
     {
         return view('project-ideas/edit', [
             'projectIdea' => $projectIdea,
-            'projectStatuses' => $this->statuses(),
+            'projectStatuses' => ProjectIdea::STATUSES,
         ]);
     }
 

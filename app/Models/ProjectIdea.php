@@ -10,4 +10,10 @@ class ProjectIdea extends Model
         'description',
         'status',
     ];
+    public const STATUSES = [
+        0 => 'Draft',
+        1 => 'Confirmed',
+        2 => 'In Progress',
+        3 => 'Completed',
+    ];
 }
