@@ -60,7 +60,7 @@ class ProjectIdeasController extends Controller
     {
 
         $request->validate([
-            'description' => 'required|string|max:1000',
+            'description' => 'required|string|min:4|max:1000',
         ]);
 
         $idea = ProjectIdea::create([
