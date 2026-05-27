@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProjectIdeaRequest;
 use App\Models\ProjectIdea;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -56,12 +57,8 @@ class ProjectIdeasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Redirector|RedirectResponse
+    public function store(StoreProjectIdeaRequest $request): Redirector|RedirectResponse
     {
-
-        $request->validate([
-            'description' => 'required|string|min:4|max:1000',
-        ]);
 
         $idea = ProjectIdea::create([
             'description' => request('description'),
