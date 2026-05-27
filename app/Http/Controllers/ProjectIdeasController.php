@@ -61,7 +61,7 @@ class ProjectIdeasController extends Controller
     {
 
         $idea = ProjectIdea::create([
-            'description' => request('description'),
+            'description' => $request->description,
             'status' => 0,
         ]);
 
