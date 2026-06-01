@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProjectIdeaRequest;
+use App\Http\Requests\UpdateProjectIdeaRequest;
 use App\Models\ProjectIdea;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -56,15 +58,11 @@ class ProjectIdeasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Redirector|RedirectResponse
+    public function store(StoreProjectIdeaRequest $request): Redirector|RedirectResponse
     {
 
-        $request->validate([
-            'description' => 'required|string|min:4|max:1000',
-        ]);
-
         $idea = ProjectIdea::create([
-            'description' => request('description'),
+            'description' => $request->description,
             'status' => 0,
         ]);
 
@@ -75,16 +73,11 @@ class ProjectIdeasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProjectIdea $projectIdea): Redirector|RedirectResponse
+    public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea): Redirector|RedirectResponse
     {
-        request()->validate([
-            'description' => 'required|string|max:1000',
-            'status' => 'required|integer|in:0,1,2,3',
-        ]);
-
         $projectIdea->update([
-            'description' => request('description'),
-            'status' => request('status'),
+            'description' => $request->description,
+            'status' => $request->status,
         ]);
 
         return redirect('/project-ideas?updated=1');

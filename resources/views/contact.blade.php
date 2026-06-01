@@ -95,19 +95,27 @@
             <label for="email">Email address</label>
             <input id="email" type="email" name="email" autocomplete="email" placeholder="email@examle.com"
                 class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal" />
+                <x-form.error name="email" />
         </div>
         <div>
             <label for="full-name">Name</label>
             <input type="text" id="full-name" name="full-name" placeholder="Full Name"
                 class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
+                <x-form.error name="full-name" />
         </div>
         <div>
             <label for="textarea-message">Message</label>
             <textarea id="textarea-message" name="message" rows="10" placeholder="Your message"
                 class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"></textarea>
+                <x-form.error name="message" />
         </div>
         <button type="submit"
             class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">Send</button>
+            @if($errors->any())
+                <div class="mt-2 text-sm text-[#f53003] dark:text-[#FF4433]">
+                    Please check the form and try again.
+                </div>
+            @endif
     </form>
 
 </x-layout>
