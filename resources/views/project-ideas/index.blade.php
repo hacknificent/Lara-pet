@@ -1,4 +1,4 @@
-<x-layout title="Project Ideas" hideDecoration="true">
+<x-layout title="Project Ideas" hideDecoration="true" :scripts="['js/index-blade-scripts.js']">
     <h1 class="mb-1 font-medium">Project Ideas</h1>
     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">With so many options available to you,<br /> we suggest you start
         with the following:</p>
@@ -6,20 +6,16 @@
         $ideasByStatus = $ideas->groupBy('status');
     @endphp
 
-    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="project-ideas-grid">
         @foreach ($statuses as $statusValue => $statusLabel)
             <section
                 class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-4 shadow-sm min-h-[220px]">
-                <header class="mb-4 flex items-center justify-between gap-3">
-                    <h2 class="text-sm font-semibold">{{ $statusLabel }}</h2>
-                    <span
-                        class="rounded-full bg-[#f3f2ee] dark:bg-[#272726] px-2 py-0.5 text-xs text-[#706f6c]">{{ $ideasByStatus->get($statusValue, collect())->count() }}</span>
-                </header>
-
-                <div class="space-y-3">
-                    @forelse($ideasByStatus->get($statusValue, collect()) as $idea)
+                <div class="space-y-3 dropzone" data-status="{{ $statusValue }}">
+                    <p class="has-no-ideas-message text-sm text-[#706f6c] dark:text-[#A1A09A]">No ideas in this column yet.</p>
+                    @foreach ($ideasByStatus->get($statusValue, collect()) as $idea)
                         <article
-                            class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#f9f8f5] dark:bg-[#111110] p-3">
+                            class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#f9f8f5] dark:bg-[#111110] p-3 draggable-idea"
+                            draggable="true" data-id="{{ $idea->id }}">
                             <a href="{{ url('/project-ideas/' . $idea->id) }}" class="font-medium">
                                 {{ $idea->description }}
                             </a>
@@ -30,10 +26,13 @@
                             </div>
                             <p class="mt-2 text-xs text-[#706f6c] dark:text-[#A1A09A]">ID #{{ $idea->id }}</p>
                         </article>
-                    @empty
-                        <p class="text-sm text-[#706f6c] dark:text-[#A1A09A]">No ideas in this column yet.</p>
-                    @endforelse
+                    @endforeach
                 </div>
+                <header class="mb-4 flex items-center justify-between gap-3">
+                    <h2 class="text-sm font-semibold">{{ $statusLabel }}</h2>
+                    <span
+                        class="project-ideas-counter rounded-full bg-[#f3f2ee] dark:bg-[#272726] px-2 py-0.5 text-xs text-[#706f6c]"></span>
+                </header>
             </section>
         @endforeach
     </div>

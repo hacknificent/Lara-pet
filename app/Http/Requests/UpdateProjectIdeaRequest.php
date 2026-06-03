@@ -15,7 +15,9 @@ class UpdateProjectIdeaRequest extends ProjectIdeaRequest
      */
     public function rules(): array
     {
-        return array_merge($this->descriptionRules(), [
+        $is_update_status_ajax_request = $this->isMethod('patch') && $this->has('status') && ! $this->has('description');
+
+        return array_merge($is_update_status_ajax_request ? [] : $this->descriptionRules(), [
             'status' => ['required', 'integer', Rule::in(array_keys(ProjectIdea::STATUSES))],
         ]);
     }

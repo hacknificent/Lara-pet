@@ -1,11 +1,13 @@
 @props([
     'title' => '',
     'hideDecoration' => false,
+    'styles' => [],
+    'scripts' => [],
 ])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <x-layout.head :title="$title" />
+    <x-layout.head :title="$title" :styles="$styles" />
 </head>
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
     <x-layout.navigation />
@@ -24,5 +26,9 @@
     @if (Route::has('login'))
         <div class="h-14.5 hidden lg:block"></div>
     @endif
+
+    @foreach ($scripts as $script)
+        <script src="{{ asset($script) }}" defer></script>
+    @endforeach
 </body>
 </html>
