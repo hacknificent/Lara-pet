@@ -73,12 +73,17 @@ class ProjectIdeasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea): Redirector|RedirectResponse
+    public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
     {
-        $projectIdea->update([
-            'description' => $request->description,
-            'status' => $request->status,
-        ]);
+        $data = $request->validated();
+
+        // Only update fields that were actually provided/validated.
+        $projectIdea->update($data);
+
+        // If this was an AJAX/json request, return JSON so client can handle it.
+        if ($request->wantsJson() || $request->expectsJson()) {
+            return response()->json(['projectStatuses' => $projectIdea->status]);
+        }
 
         return redirect('/project-ideas?updated=1');
     }

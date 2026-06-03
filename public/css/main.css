@@ -2,3 +2,34 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.project-ideas-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.project-ideas-grid section {
+  display: flex;
+  flex-direction: column;
+}
+.project-ideas-grid .dropzone {
+  counter-reset: project-ideas;
+  order: 0;
+  height: 100%;
+}
+.project-ideas-grid .dropzone:has(article) .has-no-ideas-message {
+  display: none;
+}
+.project-ideas-grid section article {
+  counter-increment: project-ideas;
+}
+.project-ideas-grid article {
+  cursor: grab;
+}
+.project-ideas-grid header {
+  order: -1;
+}
+.project-ideas-grid .project-ideas-counter::after {
+  content: counter(project-ideas);
+}
