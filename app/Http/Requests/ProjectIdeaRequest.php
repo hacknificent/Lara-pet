@@ -25,6 +25,38 @@ abstract class ProjectIdeaRequest extends FormRequest
         ];
     }
 
+    protected function titleRules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'min:3', 'max:255'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return array_merge(
+            $this->descriptionMessages(),
+            $this->titleMessages(),
+            $this->customMessages(),
+        );
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function titleMessages(): array
+    {
+        return [
+            'title.required' => 'The idea title is required.',
+            'title.string' => 'The idea title must be a string.',
+            'title.min' => 'The idea title must be at least 3 characters long.',
+            'title.max' => 'The idea title must be less than 255 characters long.',
+        ];
+    }
+
     /**
      * @return array<string, string>
      */
@@ -36,17 +68,6 @@ abstract class ProjectIdeaRequest extends FormRequest
             'description.min' => 'The idea description must be at least 3 characters long.',
             'description.max' => 'The idea description must be less than 1000 characters long.',
         ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return array_merge(
-            $this->descriptionMessages(),
-            $this->customMessages(),
-        );
     }
 
     /**

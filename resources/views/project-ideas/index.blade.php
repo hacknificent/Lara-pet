@@ -17,7 +17,7 @@
                             class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#f9f8f5] dark:bg-[#111110] p-3 draggable-idea"
                             draggable="true" data-id="{{ $idea->id }}">
                             <a href="{{ url('/project-ideas/' . $idea->id) }}" class="font-medium">
-                                {{ $idea->description }}
+                                {{ $idea->title }}
                             </a>
                             <div>
                                 <a href="{{ url('/project-ideas/' . $idea->id . '/edit') }}" class="font-medium">
@@ -40,9 +40,16 @@
     <form method="POST" action="/create-idea">
         @csrf
         <div>
+            <label for="input-title">Idea Title</label>
+            <input id="input-title" name="title" type="text" placeholder="Project title"
+                value="{{ old('title') }}"
+                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal" />
+            <x-form.error name="title" />
+        </div>
+        <div class="mt-4">
             <label for="textarea-message">Idea Description</label>
             <textarea id="textarea-message" name="description" rows="10" placeholder="Your Idea"
-                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"></textarea>
+                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">{{ old('description') }}</textarea>
             <x-form.error name="description" />
         </div>
         <button type="submit"

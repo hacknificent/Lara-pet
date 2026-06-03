@@ -5,9 +5,16 @@
         @csrf
         @method('PATCH')
         <div>
+            <label for="input-title">Idea Title</label>
+            <input id="input-title" name="title" type="text" placeholder="Project title"
+                value="{{ old('title', $projectIdea->title) }}"
+                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal" />
+            <x-form.error name="title" />
+        </div>
+        <div class="mt-4">
             <label for="textarea-message">Idea Description</label>
             <textarea id="textarea-message" name="description" rows="10" placeholder="Your Idea"
-                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">{{ $projectIdea->description }}</textarea>
+                class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">{{ old('description', $projectIdea->description) }}</textarea>
         </div>
         <div class="mt-4 mb-4">
             <label for="status">Status</label>
