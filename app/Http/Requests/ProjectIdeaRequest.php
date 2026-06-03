@@ -21,7 +21,7 @@ abstract class ProjectIdeaRequest extends FormRequest
     protected function descriptionRules(): array
     {
         return [
-            'description' => ['required', 'string', 'min:3', 'max:1000'],
+            'description' => ['nullable', 'string', 'min:3', 'max:1000'],
         ];
     }
 
@@ -63,7 +63,7 @@ abstract class ProjectIdeaRequest extends FormRequest
     protected function descriptionMessages(): array
     {
         return [
-            'description.required' => 'The idea description is required.',
+            // 'description.required' => 'The idea description is required.',
             'description.string' => 'The idea description must be a string.',
             'description.min' => 'The idea description must be at least 3 characters long.',
             'description.max' => 'The idea description must be less than 1000 characters long.',
