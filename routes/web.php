@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectIdeasController;
 use App\Http\Controllers\PageController;
-use App\Models\ProjectIdea;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 
 Route::get('/', [PageController::class, 'showWelcomePage']);
 
@@ -26,3 +28,13 @@ Route::get('/project-ideas/{projectIdea}/edit', [ProjectIdeasController::class, 
 Route::patch('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'update']);
 
 Route::delete('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'destroy']);
+
+
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store']);
+
+
+Route::get('/login', [LoginController::class, 'create'])->name('login');
+Route::post('/login', [LoginController::class, 'store'])->name('login.submit');
+
+Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
