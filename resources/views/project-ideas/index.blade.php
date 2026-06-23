@@ -1,4 +1,4 @@
-<x-layout title="Project Ideas" hideDecoration="true" :scripts="['js/index-blade-scripts.js']">
+<x-layout title="Project Ideas" hideDecoration="true" :scripts="['js/project-ideas-index-scripts.js']">
     <h1 class="mb-1 font-medium">Project Ideas</h1>
     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">With so many options available to you,<br /> we suggest you start
         with the following:</p>
