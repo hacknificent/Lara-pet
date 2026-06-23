@@ -15,7 +15,7 @@
                     @foreach ($ideasByStatus->get($statusValue, collect()) as $idea)
                         <article
                             class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#f9f8f5] dark:bg-[#111110] p-3 draggable-idea"
-                            draggable="true" data-id="{{ $idea->id }}">
+                            draggable="true" data-id="{{ $idea->id }}" data-order="{{ $idea->order ?? 0 }}">
                             <a href="{{ url('/project-ideas/' . $idea->id) }}" class="font-medium">
                                 {{ $idea->title }}
                             </a>

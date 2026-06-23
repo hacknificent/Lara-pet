@@ -10,7 +10,13 @@ class ProjectIdea extends Model
         'title',
         'description',
         'status',
+        'order',
     ];
+
+    protected $casts = [
+        'order' => 'float',
+    ];
+
     public const STATUSES = [
         0 => 'Draft',
         1 => 'Confirmed',

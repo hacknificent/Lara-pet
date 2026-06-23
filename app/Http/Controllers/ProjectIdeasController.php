@@ -20,7 +20,7 @@ class ProjectIdeasController extends Controller
     public function index(): Factory|View
     {
         return view('project-ideas/index', [
-            'ideas' => ProjectIdea::latest()->get(),
+            'ideas' => ProjectIdea::orderBy('status')->orderBy('order')->get(),
             'statuses' => ProjectIdea::STATUSES,
         ]);
     }
@@ -60,13 +60,15 @@ class ProjectIdeasController extends Controller
      */
     public function store(StoreProjectIdeaRequest $request): Redirector|RedirectResponse
     {
+        $maxOrder = ProjectIdea::where('status', 0)->max('order');
+        $order = is_null($maxOrder) ? 1.0 : (float) (floor($maxOrder) + 1);
 
         $idea = ProjectIdea::create([
             'title' => $request->title,
             'description' => $request->description,
             'status' => 0,
+            'order' => $order,
         ]);
-
 
         return redirect('/project-ideas?created=1');
     }
@@ -77,16 +79,70 @@ class ProjectIdeasController extends Controller
     public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
-
-        // Only update fields that were actually provided/validated.
         $projectIdea->update($data);
+
+        // Check if rescale is needed
+        $shouldRescale = false;
+        if (isset($data['order']) && $this->rescaleIsEnabled()) {
+            $shouldRescale = $this->shouldRescaleOrder($data['order']);
+            if ($shouldRescale) {
+                $this->rescaleOrderForStatus($projectIdea->status);
+            }
+        }
 
         // If this was an AJAX/json request, return JSON so client can handle it.
         if ($request->wantsJson() || $request->expectsJson()) {
-            return response()->json(['projectStatuses' => $projectIdea->status]);
+            return response()->json([
+                'projectStatuses' => $projectIdea->status,
+                'rescaled' => $shouldRescale,
+            ]);
         }
 
         return redirect('/project-ideas?updated=1');
+    }
+
+    /**
+     * Check if rescaling is enabled (easily toggleable).
+     */
+    private function rescaleIsEnabled(): bool
+    {
+        return true; // Set to false to disable rescaling
+    }
+
+    /**
+     * Decimal places threshold for triggering rescale.
+     */
+    private function rescaleDecimalThreshold(): int
+    {
+        return 3; // Trigger rescale when order has more than 3 decimal places
+    }
+
+    /**
+     * Check if order value exceeds decimal precision threshold.
+     */
+    private function shouldRescaleOrder(float $order): bool
+    {
+        $str = (string) $order;
+        if (strpos($str, '.') === false) {
+            return false;
+        }
+
+        $decimals = strlen(substr(strrchr($str, '.'), 1));
+        return $decimals > $this->rescaleDecimalThreshold();
+    }
+
+    /**
+     * Rescale all orders for a given status to fresh sequential values.
+     */
+    private function rescaleOrderForStatus(int $status): void
+    {
+        $ideas = ProjectIdea::where('status', $status)
+            ->orderBy('order')
+            ->get();
+
+        foreach ($ideas as $index => $idea) {
+            $idea->update(['order' => (float) ($index + 1)]);
+        }
     }
 
     /**

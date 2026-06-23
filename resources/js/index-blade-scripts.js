@@ -29,6 +29,43 @@
         e.currentTarget.classList.remove('drag-over');
     }
 
+    function computeNextOrder(el) {
+        const prev = el.previousElementSibling;
+        const next = el.nextElementSibling;
+
+        const prevOrder = prev?.dataset?.order ? parseFloat(prev.dataset.order) : null;
+        const nextOrder = next?.dataset?.order ? parseFloat(next.dataset.order) : null;
+
+        if (prevOrder !== null && nextOrder !== null) {
+            // Between two elements: use an adaptive small step so digits don't explode.
+            let step = 0.1;
+            let newOrder = prevOrder + step;
+
+            while (newOrder >= nextOrder && step > 0.00000001) {
+                step /= 10;
+                newOrder = prevOrder + step;
+            }
+
+            return newOrder;
+        }
+
+        if (prevOrder !== null) {
+            // After previous element
+            return prevOrder + 1.0;
+        }
+
+        if (nextOrder !== null) {
+            // Before next element: subtract an adaptive step from the former first element.
+            let step = 0.1;
+            while (nextOrder <= step && step > 0.00000001) {
+                step /= 10;
+            }
+            return nextOrder - step;
+        }
+
+        return 1.0;
+    }
+
     async function onDrop(e) {
         e.preventDefault();
         const dropzone = e.currentTarget;
@@ -37,11 +74,29 @@
         if (!id) return;
 
         const el = document.querySelector('[data-id="' + id + '"]');
-        if (el) {
+        if (!el) return;
+
+        // Find insertion point based on mouse Y coordinate
+        const articles = Array.from(dropzone.querySelectorAll('.draggable-idea'));
+        let insertBefore = null;
+
+        for (const article of articles) {
+            if (article === el) continue; // Skip the element itself
+            const rect = article.getBoundingClientRect();
+            if (e.clientY < rect.top + rect.height / 2) {
+                insertBefore = article;
+                break;
+            }
+        }
+
+        if (insertBefore) {
+            dropzone.insertBefore(el, insertBefore);
+        } else {
             dropzone.appendChild(el);
         }
 
-        const newStatus = dropzone.dataset.status;
+        const newStatus = parseInt(dropzone.dataset.status, 10);
+        const newOrder = computeNextOrder(el);
 
         try {
             const res = await fetch(`/project-ideas/${id}`, {
@@ -51,7 +106,7 @@
                     'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json',
                 },
-                body: JSON.stringify({ status: parseInt(newStatus, 10) }),
+                body: JSON.stringify({ status: newStatus, order: newOrder }),
             });
 
             if (!res.ok) {
@@ -61,9 +116,17 @@
                     : 'Update failed';
                 throw new Error(msg);
             }
+
+            const json = await res.json();
+            el.dataset.order = newOrder;
+
+            // If rescale was triggered, reload page
+            if (json.rescaled) {
+                setTimeout(() => window.location.reload(), 500);
+            }
         } catch (err) {
             console.error(err);
-            alert('Could not update status: ' + err.message);
+            alert('Could not update position: ' + err.message);
         }
     }
 

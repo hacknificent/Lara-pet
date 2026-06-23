@@ -17,12 +17,10 @@ class UpdateProjectIdeaRequest extends ProjectIdeaRequest
     {
         $is_update_status_ajax_request = $this->isMethod('patch') && $this->has('status') && ! $this->has('description');
 
-        return array_merge(
-            $is_update_status_ajax_request ? [] : array_merge($this->titleRules(), $this->descriptionRules()),
-            [
-                'status' => ['required', 'integer', Rule::in(array_keys(ProjectIdea::STATUSES))],
-            ]
-        );
+        return array_merge($is_update_status_ajax_request ? [] : array_merge($this->titleRules(), $this->descriptionRules()), [
+            'status' => ['required', 'integer', Rule::in(array_keys(ProjectIdea::STATUSES))],
+            'order' => ['sometimes', 'numeric', 'min:0'],
+        ]);
     }
 
     /**
