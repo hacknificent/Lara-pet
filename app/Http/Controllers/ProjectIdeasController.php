@@ -76,17 +76,17 @@ class ProjectIdeasController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
+    public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea, ProjectIdeaRescaleController $rescaler): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
         $projectIdea->update($data);
 
         // Check if rescale is needed
         $shouldRescale = false;
-        if (isset($data['order']) && $this->rescaleIsEnabled()) {
-            $shouldRescale = $this->shouldRescaleOrder($data['order']);
+        if (isset($data['order']) && $rescaler->rescaleIsEnabled()) {
+            $shouldRescale = $rescaler->shouldRescaleOrder($data['order']);
             if ($shouldRescale) {
-                $this->rescaleOrderForStatus($projectIdea->status);
+                $rescaler->rescaleOrderForStatus($projectIdea->status);
             }
         }
 
@@ -101,49 +101,7 @@ class ProjectIdeasController extends Controller
         return redirect('/project-ideas?updated=1');
     }
 
-    /**
-     * Check if rescaling is enabled (easily toggleable).
-     */
-    private function rescaleIsEnabled(): bool
-    {
-        return true; // Set to false to disable rescaling
-    }
-
-    /**
-     * Decimal places threshold for triggering rescale.
-     */
-    private function rescaleDecimalThreshold(): int
-    {
-        return 3; // Trigger rescale when order has more than 3 decimal places
-    }
-
-    /**
-     * Check if order value exceeds decimal precision threshold.
-     */
-    private function shouldRescaleOrder(float $order): bool
-    {
-        $str = (string) $order;
-        if (strpos($str, '.') === false) {
-            return false;
-        }
-
-        $decimals = strlen(substr(strrchr($str, '.'), 1));
-        return $decimals > $this->rescaleDecimalThreshold();
-    }
-
-    /**
-     * Rescale all orders for a given status to fresh sequential values.
-     */
-    private function rescaleOrderForStatus(int $status): void
-    {
-        $ideas = ProjectIdea::where('status', $status)
-            ->orderBy('order')
-            ->get();
-
-        foreach ($ideas as $index => $idea) {
-            $idea->update(['order' => (float) ($index + 1)]);
-        }
-    }
+    
 
     /**
      * Remove the specified resource from storage.
