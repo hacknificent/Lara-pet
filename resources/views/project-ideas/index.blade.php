@@ -9,7 +9,7 @@
         $ideasByStatus = $ideas->groupBy('status');
     @endphp
 
-    <div class="project-ideas-grid">
+    <div class="project-ideas-grid" data-status-count="{{ count($statuses) }}">
         @foreach ($statuses as $statusValue => $statusLabel)
             <section
                 class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-white dark:bg-[#161615] p-4 shadow-sm min-h-[220px]">

@@ -5,9 +5,12 @@ body {
 
 .project-ideas-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--status-count, 4), minmax(0, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
+}
+.project-ideas-grid[data-status-count] {
+  --status-count: attr(data-status-count number);
 }
 .project-ideas-grid section {
   display: flex;
