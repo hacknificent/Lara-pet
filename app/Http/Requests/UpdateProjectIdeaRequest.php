@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ProjectIdea;
+use App\Models\Project;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
@@ -17,8 +17,11 @@ class UpdateProjectIdeaRequest extends ProjectIdeaRequest
     {
         $is_update_status_ajax_request = $this->isMethod('patch') && $this->has('status') && ! $this->has('description');
 
+        $projectIdea = $this->route('projectIdea');
+        $statusKeys = array_keys(optional(optional($projectIdea)->project)->statuses ?? Project::DEFAULT_STATUSES);
+
         return array_merge($is_update_status_ajax_request ? [] : array_merge($this->titleRules(), $this->descriptionRules()), [
-            'status' => ['required', 'integer', Rule::in(array_keys(ProjectIdea::STATUSES))],
+            'status' => ['required', 'integer', Rule::in($statusKeys)],
             'order' => ['sometimes', 'numeric', 'min:0'],
         ]);
     }

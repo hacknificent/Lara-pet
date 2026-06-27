@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectIdeasController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -29,6 +30,7 @@ Route::patch('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'up
 
 Route::delete('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'destroy']);
 
+Route::resource('project', ProjectController::class);
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);

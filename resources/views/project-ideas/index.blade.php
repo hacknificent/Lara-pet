@@ -1,7 +1,10 @@
 <x-layout title="Project Ideas" hideDecoration="true" :scripts="['js/project-ideas-index-scripts.js']">
     <h1 class="mb-1 font-medium">Project Ideas</h1>
-    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">With so many options available to you,<br /> we suggest you start
-        with the following:</p>
+    @if (isset($project))
+        <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">Project: <strong>{{ $project->title }}</strong></p>
+    @else
+        <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">You have no project selected yet. Please create a project first.</p>
+    @endif
     @php
         $ideasByStatus = $ideas->groupBy('status');
     @endphp
@@ -37,12 +40,14 @@
         @endforeach
     </div>
 
-    <form method="POST" action="/create-idea">
-        @csrf
-        <div>
-            <label for="input-title">Idea Title</label>
-            <input id="input-title" name="title" type="text" placeholder="Project title"
-                value="{{ old('title') }}"
+    @if (isset($project))
+        <form method="POST" action="/create-idea">
+            @csrf
+            <input type="hidden" name="project_id" value="{{ $project->id }}">
+            <div>
+                <label for="input-title">Idea Title</label>
+                <input id="input-title" name="title" type="text" placeholder="Project title"
+                    value="{{ old('title') }}"
                 class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal" />
             <x-form.error name="title" />
         </div>
@@ -52,9 +57,13 @@
                 class="w-full inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">{{ old('description') }}</textarea>
             <x-form.error name="description" />
         </div>
-        <button type="submit"
-            class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">Send</button>
-    </form>
+            <button type="submit"
+                class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">Send</button>
+        </form>
+    @else
+        <a href="{{ route('project.create') }}"
+            class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">Create your first project</a>
+    @endif
 
     <p class="mt-6 lg:mt-10 text-[#706f6c] dark:text-[#A1A09A]">
         v{{ app()->version() }}

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProjectIdea extends Model
 {
@@ -11,16 +12,15 @@ class ProjectIdea extends Model
         'description',
         'status',
         'order',
+        'project_id',
     ];
 
     protected $casts = [
         'order' => 'float',
     ];
 
-    public const STATUSES = [
-        0 => 'Draft',
-        1 => 'Confirmed',
-        2 => 'In Progress',
-        3 => 'Completed',
-    ];
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
 }

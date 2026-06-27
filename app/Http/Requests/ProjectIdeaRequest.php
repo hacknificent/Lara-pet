@@ -33,6 +33,16 @@ abstract class ProjectIdeaRequest extends FormRequest
     }
 
     /**
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    protected function projectIdRules(): array
+    {
+        return [
+            'project_id' => ['required', 'integer', 'exists:projects,id'],
+        ];
+    }
+
+    /**
      * @return array<string, string>
      */
     public function messages(): array

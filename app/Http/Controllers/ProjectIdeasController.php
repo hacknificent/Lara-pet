@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProjectIdeaRequest;
 use App\Http\Requests\UpdateProjectIdeaRequest;
+use App\Models\Project;
 use App\Models\ProjectIdea;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -12,15 +13,23 @@ use Illuminate\Routing\Redirector;
 
 class ProjectIdeasController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index(): Factory|View
     {
+        // For now, just show the ideas for the first project. In the future, we may want to allow the user to select which project to view.
+        $project = Project::find(1);
+
         return view('project-ideas/index', [
-            'ideas' => ProjectIdea::orderBy('status')->orderBy('order')->get(),
-            'statuses' => ProjectIdea::STATUSES,
+            'project' => $project,
+            'ideas' => $project ? $project->ideas()->orderBy('status')->orderBy('order')->get() : collect(),
+            'statuses' => $project ? $project->statuses ?? Project::DEFAULT_STATUSES : Project::DEFAULT_STATUSES,
         ]);
     }
 
@@ -37,9 +46,11 @@ class ProjectIdeasController extends Controller
      */
     public function show(ProjectIdea $projectIdea): Factory|View
     {
+        $this->authorizeProjectIdea($projectIdea);
+
         return view('project-ideas/show', [
             'projectIdea' => $projectIdea,
-            'projectStatuses' => ProjectIdea::STATUSES,
+            'projectStatuses' => $projectIdea->project->statuses ?? Project::DEFAULT_STATUSES,
         ]);
     }
 
@@ -48,9 +59,11 @@ class ProjectIdeasController extends Controller
      */
     public function edit(ProjectIdea $projectIdea): Factory|View
     {
+        $this->authorizeProjectIdea($projectIdea);
+
         return view('project-ideas/edit', [
             'projectIdea' => $projectIdea,
-            'projectStatuses' => ProjectIdea::STATUSES,
+            'projectStatuses' => $projectIdea->project->statuses ?? Project::DEFAULT_STATUSES,
         ]);
     }
 
@@ -59,17 +72,19 @@ class ProjectIdeasController extends Controller
      */
     public function store(StoreProjectIdeaRequest $request): Redirector|RedirectResponse
     {
-        $maxOrder = ProjectIdea::where('status', 0)->max('order');
+        $project = auth()->user()->projects()->findOrFail($request->project_id);
+
+        $maxOrder = $project->ideas()->where('status', 0)->max('order');
         $order = is_null($maxOrder) ? 1.0 : (float) (floor($maxOrder) + 1);
 
-        $idea = ProjectIdea::create([
+        $project->ideas()->create([
             'title' => $request->title,
             'description' => $request->description,
             'status' => 0,
             'order' => $order,
         ]);
 
-        return redirect('/project-ideas?created=1');
+        return redirect()->route('project.show', $project);
     }
 
     /**
@@ -77,6 +92,8 @@ class ProjectIdeasController extends Controller
      */
     public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea, ProjectIdeaRescaleController $rescaler): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
     {
+        $this->authorizeProjectIdea($projectIdea);
+
         $data = $request->validated();
         $projectIdea->update($data);
 
@@ -107,8 +124,15 @@ class ProjectIdeasController extends Controller
      */
     public function destroy(ProjectIdea $projectIdea): Redirector|RedirectResponse
     {
+        $this->authorizeProjectIdea($projectIdea);
+
         $projectIdea->delete();
 
         return redirect('/project-ideas?deleted=1');
+    }
+
+    private function authorizeProjectIdea(ProjectIdea $projectIdea): void
+    {
+        abort_unless($projectIdea->project && $projectIdea->project->user_id === auth()->id(), 403);
     }
 }

@@ -13,6 +13,6 @@ class StoreProjectIdeaRequest extends ProjectIdeaRequest
      */
     public function rules(): array
     {
-        return array_merge($this->titleRules(), $this->descriptionRules());
+        return array_merge($this->titleRules(), $this->descriptionRules(), $this->projectIdRules());
     }
 }
