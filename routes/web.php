@@ -18,19 +18,9 @@ Route::get('/contact', [PageController::class, 'showContactPage']);
 Route::post('/contact-form', [ContactController::class, 'contactFormHandler']);
 
 
-Route::get('/project-ideas', [ProjectIdeasController::class, 'index']);
-
-Route::post('/create-idea', [ProjectIdeasController::class, 'store']);
-
-Route::get('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'show']);
-
-Route::get('/project-ideas/{projectIdea}/edit', [ProjectIdeasController::class, 'edit']);
-
-Route::patch('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'update']);
-
-Route::delete('/project-ideas/{projectIdea}', [ProjectIdeasController::class, 'destroy']);
-
+Route::resource('project-ideas', ProjectIdeasController::class);
 Route::resource('project', ProjectController::class);
+
 
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
