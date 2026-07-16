@@ -18,12 +18,12 @@
                     @foreach ($ideasByStatus->get($statusValue, collect()) as $idea)
                         <article
                             class="rounded-sm border border-[#e3e3e0] dark:border-[#3E3E3A] bg-[#f9f8f5] dark:bg-[#111110] p-3 draggable-idea"
-                            draggable="true" data-id="{{ $idea->id }}" data-order="{{ $idea->order ?? 0 }}">
-                            <a href="{{ url('/project-ideas/' . $idea->id) }}" class="font-medium">
+                            draggable="true" data-id="{{ $idea->uuid }}" data-order="{{ $idea->order ?? 0 }}">
+                            <a href="{{ url('/project-ideas/' . $idea->uuid) }}" class="font-medium">
                                 {{ $idea->title }}
                             </a>
                             <div>
-                                <a href="{{ url('/project-ideas/' . $idea->id . '/edit') }}" class="font-medium">
+                                <a href="{{ url('/project-ideas/' . $idea->uuid . '/edit') }}" class="font-medium">
                                     <span style='font-size:20px;'>&#x270D;</span>
                                 </a>
                             </div>

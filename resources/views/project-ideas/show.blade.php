@@ -5,7 +5,7 @@
     @else
         <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">No project idea description available.</p>
     @endif
-    <a href="{{ url('/project-ideas/' . $projectIdea->id . '/edit') }}" class="font-medium">
+    <a href="{{ url('/project-ideas/' . $projectIdea->uuid . '/edit') }}" class="font-medium">
         <span style='font-size:20px;'>&#x270D;</span>
     </a>
 </x-layout>
