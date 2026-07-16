@@ -114,7 +114,7 @@ class ProjectIdeasController extends Controller
             ]);
         }
 
-        return redirect('/project-ideas?updated=1');
+        return redirect()->route('project.show', $projectIdea->project);
     }
 
     
@@ -128,7 +128,7 @@ class ProjectIdeasController extends Controller
 
         $projectIdea->delete();
 
-        return redirect('/project-ideas?deleted=1');
+        return redirect()->route('project.show', $projectIdea->project);
     }
 
     private function authorizeProjectIdea(ProjectIdea $projectIdea): void
