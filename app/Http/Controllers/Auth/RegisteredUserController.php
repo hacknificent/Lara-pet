@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class RegisteredUserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+    
     /**
      * Display a listing of the resource.
      */
