@@ -14,6 +14,9 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
+/**
+ * @property-read Collection<int, Project> $projects
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */

@@ -10,6 +10,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+
+/**
+ * @property int $id
+ * @property string $title
+ * @property int $user_id
+ * @property string $uuid
+ * @property array|null $statuses
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Collection<int, ProjectIdea> $ideas
+ * @property-read User $user
+ */
 class Project extends Model
 {
     use HasFactory;
