@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectIdeasController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -30,3 +31,5 @@ Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])->name('login.submit');
 
 Route::post('/logout', [LogoutController::class, 'destroy'])->name('logout');
+
+Route::get('/admin', [AdminController::class, 'index']);

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,5 +21,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        Gate::define('view-admin-panel', function ($user) {
+            return true || $user->is_admin;
+        });
+        
+        Gate::define('view-all-projects', function ($user) {
+            return true;
+        });
     }
 }
