@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateProjectIdeaRequest;
 use App\Models\Project;
 use App\Models\ProjectIdea;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
@@ -46,7 +47,7 @@ class ProjectIdeasController extends Controller
      */
     public function show(ProjectIdea $projectIdea): Factory|View
     {
-        $this->authorizeProjectIdea($projectIdea);
+        Gate::authorize('view', $projectIdea);
 
         return view('project-ideas/show', [
             'projectIdea' => $projectIdea,
@@ -59,7 +60,7 @@ class ProjectIdeasController extends Controller
      */
     public function edit(ProjectIdea $projectIdea): Factory|View
     {
-        $this->authorizeProjectIdea($projectIdea);
+        Gate::authorize('view', $projectIdea);
 
         return view('project-ideas/edit', [
             'projectIdea' => $projectIdea,
@@ -92,7 +93,7 @@ class ProjectIdeasController extends Controller
      */
     public function update(UpdateProjectIdeaRequest $request, ProjectIdea $projectIdea, ProjectIdeaRescaleController $rescaler): Redirector|RedirectResponse|\Illuminate\Http\JsonResponse
     {
-        $this->authorizeProjectIdea($projectIdea);
+        Gate::authorize('update', $projectIdea);
 
         $data = $request->validated();
         $projectIdea->update($data);
@@ -124,15 +125,11 @@ class ProjectIdeasController extends Controller
      */
     public function destroy(ProjectIdea $projectIdea): Redirector|RedirectResponse
     {
-        $this->authorizeProjectIdea($projectIdea);
+        Gate::authorize('delete', $projectIdea);
 
         $projectIdea->delete();
 
         return redirect()->route('project.show', $projectIdea->project);
     }
 
-    private function authorizeProjectIdea(ProjectIdea $projectIdea): void
-    {
-        abort_unless($projectIdea->project && $projectIdea->project->user_id === auth()->id(), 403);
-    }
 }

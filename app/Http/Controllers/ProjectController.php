@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -43,7 +44,7 @@ class ProjectController extends Controller
 
     public function show(Project $project): Factory|View
     {
-        abort_unless($project->user_id === auth()->id(), 403);
+        Gate::authorize('view', $project);
 
         return view('project-ideas/index', [
             'project' => $project,
@@ -54,7 +55,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project): Factory|View
     {
-        abort_unless($project->user_id === auth()->id(), 403);
+        Gate::authorize('view', $project);
 
         return view('projects/edit', [
             'project' => $project,
@@ -64,7 +65,7 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project): Redirector|RedirectResponse
     {
-        abort_unless($project->user_id === auth()->id(), 403);
+        Gate::authorize('update', $project);
 
         $project->update([
             'title' => $request->title,
@@ -76,7 +77,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): Redirector|RedirectResponse
     {
-        abort_unless($project->user_id === auth()->id(), 403);
+        Gate::authorize('delete', $project);
 
         $project->delete();
 
